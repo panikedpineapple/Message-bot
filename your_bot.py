@@ -3,11 +3,13 @@ import sys
 import settings
 import discord
 import message_handler
+import datetime
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from events.base_event              import BaseEvent
 from events                         import *
 from multiprocessing                import Process
+import json
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
@@ -64,6 +66,20 @@ def main():
             except:
                 print("Error while handling message", flush=True)
                 raise
+        elif message.channel.id in settings.ALLOWED_CHANNELS and message.author.id in settings.USER_WATCHLIST:
+            f = {
+                'id' : message.id,
+                'content' : message.content,
+                'author' : message.author.name,
+                'time' : message.created_at.strftime('%d-%m-%Y %T')
+            }
+            with open('data.json', 'r') as d:
+                data = json.load(d)
+            data["messages"].append(f)
+            with open('data.json', 'w') as d:
+                json.dump(data, d)
+
+
 
     @client.event
     async def on_message(message):

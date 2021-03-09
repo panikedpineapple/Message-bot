@@ -1,11 +1,13 @@
 aiohttp
-APScheduler
+APScheduler~=3.7.0
 async-timeout
 chardet
 discord.py
-emoji
+emoji~=1.2.0
 multidict
 pytz
 six
 tzlocal
 websockets
+datetime
+flask
