@@ -18,6 +18,6 @@ def get_messages():
         f = json.load(data)
         return jsonify({'messages' : f['messages'][count2:]})
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0', port=80)
 
 
