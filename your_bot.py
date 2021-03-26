@@ -66,12 +66,22 @@ def main():
             except:
                 print("Error while handling message", flush=True)
                 raise
-        elif message.channel.id in settings.ALLOWED_CHANNELS and message.author.id in settings.USER_WATCHLIST:
+        elif message.channel.id in settings.ALLOWED_CHANNELS or message.author.id in settings.USER_WATCHLIST:
+            if type(message.edited_at) is type(None):
+                ed = 'None'
+            else:
+                ed = message.edited_at.strftime('%d-%m-%Y %T%f')
             f = {
-                'id' : message.id,
+                'attachments' : [attachment.filename for attachment in message.attachments],
+                'author' : message.author.id,
+                'channel' : message.channel.id,
                 'content' : message.content,
-                'author' : message.author.name,
-                'time' : message.created_at.strftime('%d-%m-%Y %T')
+                'created_at' : message.created_at.strftime('%d-%m-%Y %T.%f'),
+                'edited_at' : ed,
+                'embeds' : [embed.title for embed in message.embeds],
+                'id' : message.id,
+                'guild' : message.guild.id,
+                'reactions' : message.reactions
             }
             with open('data.json', 'r') as d:
                 data = json.load(d)
