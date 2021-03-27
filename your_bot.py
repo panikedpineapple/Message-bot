@@ -1,4 +1,5 @@
 import sys
+import os
 
 import settings
 import discord
@@ -83,6 +84,10 @@ def main():
                 'guild' : message.guild.id,
                 'reactions' : message.reactions
             }
+            if not os.path.isfile("data.json"):
+                with open('data.json', 'r') as d:
+                    data = {'messages' : []}
+                    json.dump(data,d)
             with open('data.json', 'r') as d:
                 data = json.load(d)
             data["messages"].append(f)
