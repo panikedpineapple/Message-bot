@@ -1,17 +1,12 @@
 import sys
-import os
+
+import discord
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 import dbmanager
-import settings
-import discord
 import message_handler
-import datetime
-
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from events.base_event              import BaseEvent
-from events                         import *
-from multiprocessing                import Process
-import json
+import settings
+from events.base_event import BaseEvent
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
@@ -23,6 +18,8 @@ sched = AsyncIOScheduler()
 
 intent = discord.Intents.default()
 intent.message_content = True
+
+
 ###############################################################################
 
 def main():
@@ -54,12 +51,11 @@ def main():
         n_ev = 0
         for ev in BaseEvent.__subclasses__():
             event = ev()
-            sched.add_job(event.run, 'interval', (client,), 
+            sched.add_job(event.run, 'interval', (client,),
                           minutes=event.interval_minutes)
             n_ev += 1
         sched.start()
         print(f"{n_ev} events loaded", flush=True)
-
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
@@ -67,16 +63,14 @@ def main():
         if text.startswith(settings.COMMAND_PREFIX) and text != settings.COMMAND_PREFIX:
             cmd_split = text[len(settings.COMMAND_PREFIX):].split()
             try:
-                await message_handler.handle_command(cmd_split[0].lower(), 
-                                      cmd_split[1:], message, client)
+                await message_handler.handle_command(cmd_split[0].lower(),
+                                                     cmd_split[1:], message, client)
             except:
                 print("Error while handling message", flush=True)
                 raise
         elif message.channel.id in settings.ALLOWED_CHANNELS or message.author.id in settings.USER_WATCHLIST:
 
             db.add_message(message)
-
-
 
     @client.event
     async def on_message(message):
@@ -88,6 +82,7 @@ def main():
 
     # Finally, set the bot running
     client.run(settings.BOT_TOKEN)
+
 
 ###############################################################################
 

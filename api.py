@@ -1,17 +1,18 @@
-from flask import Flask , jsonify , request
-import json
-import dbmanager
+from flask import Flask, jsonify, request
 
-#create a new app constructor
+import dbmanager
+# create a new app constructor
 import settings
 
 app = Flask(__name__)
 
-#boilerplate
+
+# boilerplate
 
 @app.route("/")
 def index():
     return "Hello world!"
+
 
 @app.route("/messages", methods=['GET'])
 def get_messages():
@@ -21,6 +22,7 @@ def get_messages():
     data = db.get_message_by_count(int(count))
     return jsonify(data)
 
+
 @app.route("/search", methods=['GET'])
 def get_messages_by_id():
     id = request.args.get("id")
@@ -29,6 +31,5 @@ def get_messages_by_id():
     data = db.get_message_by_id(int(id))
     return jsonify(data)
 
+
 app.run(host='0.0.0.0', port=80)
-
-

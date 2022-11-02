@@ -3,13 +3,12 @@ import sqlite3
 import discord
 
 
-class DBManager():
+class DBManager:
 
     def __init__(self, dbfile: str):
         self.connection = sqlite3.connect(dbfile)
         self.cursor = self.connection.cursor()
         self.create_table()
-
 
     def create_table(self):
 
@@ -24,7 +23,6 @@ class DBManager():
         self.connection.commit()
 
     def add_message(self, message: discord.Message):
-
 
         try:
             rid = message.reference.message_id
@@ -47,27 +45,27 @@ class DBManager():
         data = self.cursor.execute(command).fetchall()
         final = []
         for a in data:
-            v = {'id' : a[0],
-                 'author' : a[1],
-                 'channel' : a[2],
-                 'content' : a[3],
-                 'created_at' : a[4],
-                 'replyid' : a[5],
-                 'guild_id' : a[6]}
+            v = {'id': a[0],
+                 'author': a[1],
+                 'channel': a[2],
+                 'content': a[3],
+                 'created_at': a[4],
+                 'replyid': a[5],
+                 'guild_id': a[6]}
             final.append(v)
 
         self.connection.close()
         return final
 
-    def get_message_by_id(self,id):
+    def get_message_by_id(self, id):
         a = self.cursor.execute(f"SELECT * FROM Messages WHERE id={id}").fetchone()
-        data = {'id' : a[0],
-                 'author' : a[1],
-                 'channel' : a[2],
-                 'content' : a[3],
-                 'created_at' : a[4],
-                 'replyid' : a[5],
-                 'guild_id' : a[6]}
+        data = {'id': a[0],
+                'author': a[1],
+                'channel': a[2],
+                'content': a[3],
+                'created_at': a[4],
+                'replyid': a[5],
+                'guild_id': a[6]}
 
         self.connection.close()
         return data
